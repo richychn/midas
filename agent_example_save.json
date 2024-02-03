@@ -1,22 +1,26 @@
 {
-    "agent":{
+    "agent": {
         "name": "placeholder_name",
         "language_model": "placeholder_llm",
         "embedding_model": "placeholder_emb"
     },
-    "prompt":{
+    "prompt": {
         "raw": "raw prompt",
         "mod": "mod prompt"
     },
-    "subquery":{
-        "subquery_name":{
+    "subquery": {
+        "subquery_name": {
             "string": "placeholder_subquery_string",
-            "embedding": [1,1,1]
+            "embedding": [
+                1,
+                1,
+                1
+            ]
         }
     },
-    "criteria":{
+    "criteria": {
         "user_criteria": {
-            "criteria_name":{
+            "criteria_name": {
                 "raw": "raw criteria",
                 "mod": "mod criteria"
             }
@@ -28,6 +32,3 @@
         }
     }
 }
-    
-    
-    
