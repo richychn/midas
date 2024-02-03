@@ -18,15 +18,12 @@
         "user_criteria": {
             "name":{
                 "raw": "",
-                "mod": "",
-                "embedding": []
+                "mod": ""
             }
         },
         "agent_criteria": {
             "name": {
-                "raw": "",
-                "mod": "",
-                "embedding": []
+                "mod": ""
             }
         }
     }
