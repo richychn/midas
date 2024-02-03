@@ -1,0 +1,32 @@
+{
+    "agent":{
+        "agent_name": "",
+        "llm": "",
+        "embedding_model": ""
+    },
+    "prompts":{
+        "raw": "",
+        "mod": ""
+    },
+    "criteria":{
+        "user_criteria": [
+            {
+                "name": "",
+                "raw": "",
+                "mod": "",
+                "embedding": ""
+            }
+        ],
+        "agent_criteria": [
+            {
+                "name": "",
+                "raw": "",
+                "mod": "",
+                "embedding": ""
+            }
+        ]
+    }
+}
+    
+    
+    
