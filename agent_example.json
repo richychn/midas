@@ -4,32 +4,31 @@
         "language_model": "",
         "embedding_model": ""
     },
-    "prompts":{
+    "prompt":{
         "raw": "",
         "mod": ""
     },
-    "subquery":[
-        {
-            "name": "",
+    "subquery":{
+        "name":{
             "string": "",
             "embedding": []
         }
-    ],
+    },
     "criteria":{
-        "user_criteria": [
-            {
+        "user_criteria": {
+            "name":{
                 "raw": "",
                 "mod": "",
                 "embedding": []
             }
-        ],
-        "agent_criteria": [
-            {
+        },
+        "agent_criteria": {
+            "name": {
                 "raw": "",
                 "mod": "",
                 "embedding": []
             }
-        ]
+        }
     }
 }
     
