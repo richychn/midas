@@ -8,10 +8,16 @@
         "raw": "",
         "mod": ""
     },
+    "subquery":[
+        {
+            "name": "",
+            "string": "",
+            "embedding": []
+        }
+    ],
     "criteria":{
         "user_criteria": [
             {
-                "name": "",
                 "raw": "",
                 "mod": "",
                 "embedding": []
@@ -19,10 +25,8 @@
         ],
         "agent_criteria": [
             {
-                "name": "",
                 "raw": "",
-                "mod": "",
-                "embedding": []
+                "mod": ""
             }
         ]
     }
