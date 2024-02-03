@@ -26,7 +26,8 @@
         "agent_criteria": [
             {
                 "raw": "",
-                "mod": ""
+                "mod": "",
+                "embedding": []
             }
         ]
     }
