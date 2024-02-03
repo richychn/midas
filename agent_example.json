@@ -1,7 +1,7 @@
 {
     "agent":{
-        "agent_name": "",
-        "llm": "",
+        "name": "",
+        "language_model": "",
         "embedding_model": ""
     },
     "prompts":{
@@ -14,7 +14,7 @@
                 "name": "",
                 "raw": "",
                 "mod": "",
-                "embedding": ""
+                "embedding": []
             }
         ],
         "agent_criteria": [
@@ -22,7 +22,7 @@
                 "name": "",
                 "raw": "",
                 "mod": "",
-                "embedding": ""
+                "embedding": []
             }
         ]
     }
