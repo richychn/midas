@@ -1,15 +1,15 @@
 import json
-import core
+import midas.core as c
 
 
 class Midas:
 
     def __init__(self):
         self.path = ''
-        self.agent = core.Agent()
-        self.prompt = core.Prompt()
-        self.subquery = core.SubQueryStruct()
-        self.criteria = core.CriteriaStruct()
+        self.agent = c.Agent()
+        self.prompt = c.Prompt()
+        self.subquery = c.SubQueryStruct()
+        self.criteria = c.CriteriaStruct()
 
     def __repr__(self):
         return f"Midas({self.agent}{self.prompt}{self.subquery}{self.criteria}"
@@ -36,9 +36,9 @@ class Midas:
     def save(self, filepath=None):
 
         if filepath is None:
-            filepath=self.filepath
+            filepath = self.filepath
 
         agent_struct = self.export_structure()
-                
+
         with open(filepath, "w") as outfile:
             json.dump(agent_struct, outfile, indent=4)
