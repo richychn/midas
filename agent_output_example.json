@@ -1,0 +1,21 @@
+{
+    "orderDetails":{
+        "orderDate": "",
+        "orderNum": null,
+    },
+    "buyer":{
+        "companyName": "",
+        "pointOfContact": "",
+        "contactEmail": "",
+        "contactPhone": "",
+        "shippingAddress": "",
+    },
+    "lineItems":[{
+        "itemNumber": null,
+        "description": "",
+        "quantity": null,
+        "unitPrice": null,
+        "discount": null,
+        "tax": null
+    }]
+}
