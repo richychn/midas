@@ -2,26 +2,33 @@ import streamlit as st
 
 def introduction_page():
         # Introduction
-    st.title("LlamaLogic: Order from Chaos")
+    st.title("Midas: Order from Chaos")
     
     st.markdown(
         """
-        In today's data-centric environment, the need for well-organized, structured data representation is 
-        pervasive across various individuals and organizations. Summarizing extensive data sources in a specified 
-        structured manner presents a significant challenge. Traditional Large Language Models (LLMs) often 
-        face difficulties in maintaining uniformity when organizing unstructured data consistently. This 
-        inconsistency becomes a barrier to achieving a standardized and precise interpretation of information. 
-        Recognizing the widespread demand for consistently structured data representation and the challenges 
-        associated with data summarization, our solution introduces a groundbreaking approach.
+        In the ever-evolving landscape of data, the significance of well-organized and structured data representation cannot be 
+        overstated. While Large Language Models (LLMs) excel at handling unstructured data, the practicalities of interacting 
+        with various applications and individuals highlight the pivotal role of structured data.
 
-        By incorporating Retrieval-Augmented Generation (RAG) technology, amplified by LlamaIndex, our project 
-        provides an efficient and reliable solution to the challenges posed by unstructured data. It not only 
-        ensures the consistent structuring of extensive information but also adeptly navigates the limitations 
-        imposed by token constraints. This unique capability empowers our solution to deliver a precise, 
-        structured interpretation of data consistently, even when dealing with massive datasets!
+        Structured data is not merely a convenience; it is a necessity. Take for example scenarios such as API interactions 
+        or legal documentation. APIs require specific variables to function correctly, and contracts demand precise information 
+        in designated fields to ensure legal validity. These are just a few of many examples that highlight the importance of 
+        structured data. 
+
+        Recognizing this imperative for consistently structured data representation and acknowledging the challenges 
+        associated with data summarization, our solution introduces a revolutionary approach.
+
+        By integrating Retrieval-Augmented Generation (RAG) technology, reinforced by LlamaIndex, our project efficiently 
+        addresses challenges associated with structuring unstructured data. Traditional LLMs, when utilized for this task, 
+        often struggle to maintain uniformity, impeding a standardized interpretation of information. Unlike these 
+        conventional approaches, our solution ensures consistent data structuring, facilitating seamless integration 
+        with tech pipelines. Additionally, it adeptly navigates token limitations, addressing the difficulties traditional 
+        LLMs encounter when handling large datasets. Our approach guarantees systematic structuring of extensive information, 
+        ensuring precision and efficiency even in the face of data complexity and scale.
         """
     )
     
+    st.title("Our Team")
 
     st.write("""
         Before we dive into our demo, let's first get to know the amazing team behind the scenes.
