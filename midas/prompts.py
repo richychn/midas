@@ -7,7 +7,7 @@ The substrings are not what format (such as python dict or JSON) should be retur
 
 The substrings are only used to retrieve information from documents, and each substring should not contain multiple topics.
 
-The output should be returned in the format {"name_of_substring": "substring", "name_of_substring": "substring"}.
+The output should be returned in the format {"subqueries": {"name_of_substring": "substring", "name_of_substring": "substring"}}.
 """
 
 CRITERIA_CONTEXT = """

@@ -60,8 +60,14 @@ class Midas:
 
         completion_dict = json.loads(completion.choices[0].message.content)
 
-        if len(completion_dict) == 1 and len(completion_dict[list(completion_dict.keys())[0]]) > 1:
-            completion_dict = completion_dict[list(completion_dict.keys())[0]]
+        while True:
+
+            if len(completion_dict) == 1 and len(completion_dict[list(completion_dict.keys())[0]]) > 1 and isinstance(completion_dict[list(completion_dict.keys())[0]], dict):
+
+                completion_dict = completion_dict[list(completion_dict.keys())[0]]
+
+            else:
+                break
 
         completion_dict = {name: {'string': string, 'embedding': []} for name, string in completion_dict.items()}
 
@@ -89,8 +95,14 @@ class Midas:
 
         completion_dict = json.loads(completion.choices[0].message.content)
 
-        if len(completion_dict) == 1 and len(completion_dict[list(completion_dict.keys())[0]]) > 1:
-            completion_dict = completion_dict[list(completion_dict.keys())[0]]
+        while True:
+
+            if len(completion_dict) == 1 and len(completion_dict[list(completion_dict.keys())[0]]) > 1  and isinstance(completion_dict[list(completion_dict.keys())[0]], dict):
+        
+                completion_dict = completion_dict[list(completion_dict.keys())[0]]
+
+            else:
+                break
 
         return completion_dict
 
@@ -236,7 +248,8 @@ class Midas:
                             'topics': [subquery]
                         }
                     else:
-                        processed_chunks[text]['topics'].append(subquery)
+                        if subquery not in processed_chunks[text]['topics']:
+                            processed_chunks[text]['topics'].append(subquery)
             
             processed_chunks_lst = u.dict_to_list(processed_chunks)
         
