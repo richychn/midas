@@ -9,6 +9,8 @@ import json
 from datetime import datetime
 from dotenv import load_dotenv
 
+from midas.embeddings import embed_string
+
 load_dotenv()
 
 
@@ -65,17 +67,8 @@ class EmailIngest:
     def add_embeddings_to_nodes(self):
         upload_text = [i.text for i in self.nodes]
 
-        headers = {"Authorization": f"Bearer {os.getenv('HUGGINGFACE_API_TOKEN')}"}
-        embedding_endpoint = "https://api-inference.huggingface.co/pipeline/feature-extraction/BAAI/bge-small-en-v1.5"
-        embedding_payload = {
-            "inputs": upload_text,
-            "options": {
-                "wait_for_model": True
-            }
-        }
-        embedding_response = requests.post(embedding_endpoint, headers=headers, json=embedding_payload)
-        embeddings = list(json.loads(embedding_response.text))
-
+        embeddings = [embed_string(i) for i in upload_text]
+    
         for node, embedding in zip(self.nodes, embeddings):
             node.embedding = embedding
     
