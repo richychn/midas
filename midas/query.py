@@ -48,3 +48,8 @@ class Query:
         if self.query_embedding is None:
             self.embed_query()
         return self.get_similar_nodes()
+    
+def agent_subquery_retrieval(item):
+    key, struct = item
+    result = Query(query_embedding=struct.embedding).run()
+    return key, result

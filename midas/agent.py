@@ -1,6 +1,7 @@
 import os
 import json
 import midas.core as c
+import midas.query as q
 import midas.prompts as p
 import midas.embeddings as e
 
@@ -59,6 +60,16 @@ class Midas:
             completion_dict[name]['embedding'] = e.embed_string(struct['string'])
 
         return completion_dict
+
+    def run(self):
+        pass
+        # prompt = self.prompt.mod
+        # subquery_names = list(self.subquery.keys())
+        # subquery_embeddings = 
+        # subquery_tups = []
+
+        # for name, struct in subquery_dicts:
+        #     q.Query(query_embedding=struct.embedding).run()
 
     def load(self, filepath):
 

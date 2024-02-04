@@ -14,4 +14,8 @@ def embed_string(input):
     }
     embedding_response = requests.post(embedding_endpoint, headers=headers, json=embedding_payload)
     embeddings = list(json.loads(embedding_response.text))
+
+    if len(embeddings) == 1:
+        return embeddings[0]
+
     return embeddings
