@@ -1,3 +1,7 @@
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
 import streamlit as st
 from midas.email_ingest import EmailIngest
 from midas.agent import Midas
@@ -112,12 +116,13 @@ if agent_button:
 load_button = st.button("Load Agent")
 if load_button:
     with st.spinner('Loading agent...'):
-        with NamedTemporaryFile(dir='.', suffix='.json') as f:
-            if uploaded_file is not None:
-                f.write(uploaded_file.getbuffer())
-                file_path = f.name
-                st.session_state['midas_agent'] = Midas()
-                st.session_state['midas_agent'].load(file_path)
+        # with NamedTemporaryFile(dir='.', suffix='.json') as f:
+        temp_dir = tempfile.TemporaryDirectory()
+        uploaded_file_name = "saved_agent.json"
+        uploaded_file_path = pathlib.Path(temp_dir.name) / uploaded_file_name
+        with open(uploaded_file_path, 'wb') as output_temporary_file:
+            st.session_state['midas_agent'] = Midas()
+            st.session_state['midas_agent'].load(uploaded_file_name)
 
 if 'midas_agent' in st.session_state:
     train_button = st.button("Train Agent")
