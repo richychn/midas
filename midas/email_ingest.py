@@ -13,7 +13,7 @@ load_dotenv()
 
 
 class EmailIngest:
-    def __init__(self, file_path, namespace="sales"):
+    def __init__(self, file_path, namespace="sales", convo_id=0):
         self.file_path = file_path
         self.parser = LlamaParse(result_type="markdown")
         self.file_extractor = {".pdf": self.parser}
@@ -23,6 +23,7 @@ class EmailIngest:
         self.document = None
         self.emails_with_metadata = []
         self.nodes = []
+        self.convo_id = convo_id
 
         self.vector_store = AstraDBVectorStore(
             token=os.getenv('ASTRA_DB_APPLICATION_TOKEN'),
@@ -43,7 +44,7 @@ class EmailIngest:
             sender = header[0]
             receiver = header[7]
             date = datetime.strptime(f'{header[1]} {header[2]}, {header[3]} {header[4]}:{header[5]} {header[6]}', '%b %d, %Y %I:%M %p')
-            self.emails_with_metadata.append((email, {"sender": sender, "receiver": receiver, "date": date.strftime("%m/%d/%Y, %H:%M")}))
+            self.emails_with_metadata.append((email, {"sender": sender, "receiver": receiver, "date": date.strftime("%m/%d/%Y, %H:%M"), "convo_id": self.convo_id}))
 
     def get_nodes(self):
         text_chunks = []
