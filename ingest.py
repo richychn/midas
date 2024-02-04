@@ -43,7 +43,7 @@ class Ingest:
             receiver = re.findall("To:.*<.*>", header)[0][4:]
             date = re.findall("(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (0?[1-9]|[1-3][0-9]), ([2][0-9]+) at ([0-1]?[0-9]|2[0-3]):([0-5][0-9]+) (AM|PM)", header)[0]
             date = datetime.strptime(f'{date[0]} {date[1]}, {date[2]} {date[3]}:{date[4]} {date[5]}', '%b %d, %Y %I:%M %p')
-            self.emails_with_metadata.append((email, {"sender": sender, "receiver": receiver, "date": date.strftime("%m/%d/%Y, %H:%M")}))
+            self.emails_with_metadata.append((email, {"sender": sender, "receiver": receiver, "date": date.strftime("%m/%d/%Y, %H:%M"), "email_id": 1}))
 
     def get_nodes(self):
         text_chunks = []
