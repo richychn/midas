@@ -4,8 +4,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 import streamlit as st
-from midas.midas.email_ingest import EmailIngest
-from midas.midas.agent import Midas
+from ....midas.email_ingest import EmailIngest
+from ....midas.agent import Midas
 import tempfile
 import pathlib
 from dotenv import load_dotenv
