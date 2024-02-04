@@ -16,14 +16,10 @@ class Agent:
     def load(self, f_agent):
 
         self.name = f_agent.get('name', '')
-        self.language_model = f_agent.get('language_model', '')
-        self.embedding_model = f_agent.get('embedding_model', '')
 
     def export_structure(self):
         return {
-            "name": self.name,
-            "language_model": self.language_model,
-            "embedding_model": self.embedding_model
+            "name": self.name
         }
 
 

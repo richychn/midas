@@ -106,10 +106,10 @@ class Midas:
 
     def run(self, convo_id, sort_key=None):
 
-        print(u.bold(f"Running Midas({self.agent.name})") + f" with convo_id={convo_id}\n")
+        print(u.bold(f"Running Midas({self.agent.name})") + f" - convo_id={convo_id}\n")
 
         print(u.bold('User Request:'))
-        print(self.prompt.mod)
+        print(self.prompt.mod+'\n')
 
         criteria_str = self.generate_criteria_str()
 
@@ -155,6 +155,9 @@ class Midas:
 
         eval = eval_completion.choices[0].message.content
 
+        print(u.bold('\nMidas Feedback:\n'))
+        print(eval + '\n')
+
         mod_completion = self.client.chat.completions.create(
             model="gpt-3.5-turbo-0125", # "gpt-4-turbo-preview",
             messages=[
@@ -167,6 +170,9 @@ class Midas:
 
         mod = json.loads(mod_completion.choices[0].message.content)
         mod = mod[list(mod.keys())[0]]
+
+        print(u.bold('Modified User Prompt:\n'))
+        print(mod + '\n')
 
         return output, eval, mod
 
@@ -201,7 +207,6 @@ class Midas:
 
     def generate_chunk_str(self, convo_id, sort_key=None):
 
-        
         def retrieve_subquery_chunks():
             with ThreadPoolExecutor() as executor:
                 results = list(executor.map(
@@ -265,6 +270,17 @@ class Midas:
         if not isinstance(convo_ids, list):
             convo_ids = [convo_ids]
 
+        train_string = f"*   Training Midas({self.agent.name})   *"
+
+        print(u.bold("*" * (len(train_string))))
+        print(u.bold(train_string))
+        print(u.bold("*" * len(train_string)) + '\n')
+
         for convo_id in convo_ids:
+
             output, eval, mod = self.evaluate(convo_id, sort_key)
             self.prompt.mod = mod
+
+        print(u.bold("**************"))
+        print(u.bold("Training Done!"))
+        print(u.bold("**************"))
