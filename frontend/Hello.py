@@ -3,13 +3,16 @@ from PIL import Image
 from dotenv import load_dotenv
 load_dotenv()
 
+import sys  
+sys.path.insert(1, '../')
+
 st.set_page_config(
     page_title="Midas",
     page_icon="👋",
 )
 
 st.title("Midas: Order from Chaos")
-    
+
 st.markdown(
     """
     In the ever-evolving landscape of data, the significance of well-organized and structured data representation cannot be 
