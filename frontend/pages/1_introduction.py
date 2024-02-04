@@ -21,10 +21,10 @@ def introduction_page():
         By integrating Retrieval-Augmented Generation (RAG) technology, reinforced by LlamaIndex, our project efficiently 
         addresses challenges associated with structuring unstructured data. Traditional LLMs, when utilized for this task, 
         often struggle to maintain uniformity, impeding a standardized interpretation of information. Unlike these 
-        conventional approaches, our solution ensures consistent data structuring, facilitating seamless integration 
-        with tech pipelines. Additionally, it adeptly navigates token limitations, addressing the difficulties traditional 
-        LLMs encounter when handling large datasets. Our approach guarantees systematic structuring of extensive information, 
-        ensuring precision and efficiency even in the face of data complexity and scale.
+        conventional approaches, our solution ensures consistent and accurate data structuring, facilitating seamless 
+        integration with tech pipelines. Additionally, it adeptly navigates token limitations, addressing the difficulties 
+        traditional LLMs encounter when handling large datasets. Our approach guarantees systematic structuring of extensive 
+        information, ensuring precision and efficiency even in the face of data complexity and scale.
         """
     )
     
