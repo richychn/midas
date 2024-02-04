@@ -113,6 +113,36 @@ class Midas:
         output = completion.choices[0].message.content
 
         return output
+    
+    def evaluate(self, convo_id, sort_key=None):
+
+        criteria_str = self.generate_criteria_str()
+
+        output = self.run(convo_id, sort_key)
+
+        eval_completion = self.client.chat.completions.create(
+            model="gpt-4-turbo-preview",
+            messages=[
+                {"role": "system", "content": p.EVAL_CONTEXT},
+                {"role": "user", "content": 'Original User Prompt:\n' + self.prompt.mod + "="*30 + criteria_str + "="*30 + 'Model Output:\n' + output}
+            ],
+            temperature=0
+        )
+
+        eval = eval_completion.choices[0].message.content
+
+        mod_completion = self.client.chat.completions.create(
+            model="gpt-4-turbo-preview",
+            messages=[
+                {"role": "system", "content": p.MOD_CONTEXT},
+                {"role": "user", "content": "Feedback:\n" + eval + "="*30 + 'Original User Prompt:\n' + self.prompt.mod}
+            ],
+            temperature=0
+        )
+
+        mod = mod_completion.choices[0].message.content
+
+        return output, eval, mod
 
     def load(self, filepath):
 
