@@ -1,6 +1,5 @@
 import sys
 from pathlib import Path
-print(str(Path(__file__).resolve().parent.parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 import streamlit as st
@@ -61,7 +60,7 @@ Try out our Midas agent for your sales emails and calls!
 """)
 
 st.subheader("0. Choose your favorite number between 10 and 100")
-convo_id = st.text_input("My favorite number is...")
+st.session_state['convo_id'] = st.number_input("My favorite number is...", step=1)
 
 st.subheader("1. Upload one email PDF:")
 uploaded_file = st.file_uploader("Sales email thread in PDF format", type='pdf')
@@ -103,7 +102,7 @@ if agent_button:
         with open(uploaded_file_path, 'wb') as output_temporary_file:
             if uploaded_file is not None:
                 output_temporary_file.write(uploaded_file.read())
-                EmailIngest(uploaded_file_path).run()
+                EmailIngest(uploaded_file_path, convo_id=st.session_state['convo_id']).run()
                 st.session_state['midas_agent'] = Midas()
                 if raw_prompt == "":
                     st.session_state['midas_agent'].set_objective(example_prompt)
@@ -125,24 +124,21 @@ if load_button:
             with open(uploaded_file_path, 'wb') as output_temporary_file:
                 output_temporary_file.write(loaded_agent.read())
                 st.session_state['midas_agent'] = Midas()
-                st.session_state['midas_agent'].load(uploaded_file_name)
+                st.session_state['midas_agent'].load(uploaded_file_path)
 
 if 'midas_agent' in st.session_state:
     train_button = st.button("Train Agent")
     if train_button:
         with st.spinner('Training...'):
-            st.session_state['midas_agent'].train(convo_ids=[convo_id], sort_key=parse_date)
+            st.session_state['midas_agent'].train(convo_ids=[st.session_state['convo_id']], sort_key=parse_date)
             st.write("Training complete!")
 
     generate_button = st.button("Generate Output")
     generation = None
     if generate_button:
-        print("button clicked")
         with st.spinner("Generating..."):
-            generation = st.session_state['midas_agent'].run(convo_id=convo_id, sort_key=parse_date)
-            print(generation)
+            generation = st.session_state['midas_agent'].run(convo_id=st.session_state['convo_id'], sort_key=parse_date)
     if generation is not None:
-        print("generation met")
         st.write(generation)
 
 
