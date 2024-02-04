@@ -27,7 +27,7 @@ class Query:
         embedding_response = requests.post(embedding_endpoint, headers=headers, json=embedding_payload)
         self.query_embedding = list(json.loads(embedding_response.text))[0]
 
-    def get_similar_nodes(self):
+    def get_similar_email_nodes(self):
         vector_store_query = VectorStoreQuery(
             query_embedding=self.query_embedding, 
             similarity_top_k=self.top_k, 
@@ -47,7 +47,7 @@ class Query:
     def run(self):
         if self.query_embedding is None:
             self.embed_query()
-        return self.get_similar_nodes()
+        return self.get_similar_email_nodes()
 
 
 def agent_subquery_retrieval(item, convo_id):
