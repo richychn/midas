@@ -1,14 +1,22 @@
+import os
 import json
 import midas.core as c
 import midas.prompts as p
 import midas.embeddings as e
 
+import openai
+from openai import OpenAI
+from dotenv import load_dotenv
+
+load_dotenv()
+
+openai.api_key = os.environ["OPENAI_API_KEY"]
 
 class Midas:
 
     def __init__(self):
         self.path = ''
-        self.client = None
+        self.client = OpenAI()
         self.is_trained = False
 
         self.agent = c.Agent()
@@ -18,9 +26,6 @@ class Midas:
 
     def __repr__(self):
         return f"Midas({self.agent}{self.prompt}{self.subquery}{self.criteria}\n)"
-    
-    def set_client(self, client):
-        self.client = client
 
     def set_mission(self, mission):
         self.prompt.raw = mission

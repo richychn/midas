@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Query:
-    def __init__(self, query_str, query_embedding=None, query_mode="default", top_k=4):
+    def __init__(self, query_str=None, query_embedding=None, query_mode="default", top_k=4):
         self.query_str = query_str
         self.query_embedding = query_embedding
         self.query_mode = query_mode
