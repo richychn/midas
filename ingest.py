@@ -32,7 +32,7 @@ class Ingest:
         )
 
     def get_documents(self):
-        self.document = LlamaParse(result_type="markdown").load_data("../data/Gmail - ASW followup.pdf")[0]
+        self.document = LlamaParse(result_type="markdown").load_data(self.file_path)[0]
 
     def get_emails_with_metadata(self):
         emails = re.split(".*<.*>.*\n*To:.*<.*>", self.document.text)[1:]
