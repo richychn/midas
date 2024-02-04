@@ -148,13 +148,16 @@ class Midas:
         print(u.bold('Agent Output:\n'))
         print(output)
 
+        output = json.loads(output)
+
         return output
-    
+
     def evaluate(self, convo_id, sort_key=None):
 
         criteria_str = self.generate_criteria_str()
 
         output = self.run(convo_id, sort_key)
+        output = str(output)
 
         eval_completion = self.client.chat.completions.create(
             model="gpt-3.5-turbo-0125",
