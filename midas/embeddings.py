@@ -2,6 +2,7 @@ import os
 import json
 import requests
 
+
 def embed_string(input):
 
     headers = {"Authorization": f"Bearer {os.getenv('HUGGINGFACE_API_KEY')}"}

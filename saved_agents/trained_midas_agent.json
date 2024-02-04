@@ -4,7 +4,7 @@
     },
     "prompt": {
         "raw": "\nFor each item that the buyer agreed to purchase, return the item name, item description, quantity purchased, unit price in dollars, unit discount in dollars, and final total price per item (quantity * (unit price - unit discount)) .\n\nEach sku of the purchased item should be treated as a separate item.\n\nOutput the result in JSON format following the example below. Each line item should have its own list under lineItems. Include all non quantity and price related details of each item under its description, such as size, color, and design.\n\n{ \"orderDetails\":{ \"orderDate\": \"\", \"orderNum\": null, }, \"buyer\":{ \"companyName\": \"\", \"pointOfContact\": \"\", \"contactEmail\": \"\", \"contactPhone\": \"\", \"shippingAddress\": \"\", }, \"lineItems\":[{ \"itemNumber\": null, \"description\": \"\", \"quantity\": null, \"unitPrice\": null, \"discount\": null, \u201ctotalPrice\u201d: null}]}\n",
-        "mod": "For each item that the buyer agreed to purchase, provide the item name, description, quantity purchased, unit price in dollars, unit discount in dollars, and final total price per item (quantity * (unit price - unit discount)). Treat each SKU of the purchased item as a separate line item. Output the information in a well-structured JSON format as shown below. Include all relevant non-quantity and price details of each item under its description, such as size, color, and design. Ensure to include order details like order date and order number under 'orderDetails', and buyer information including company name, point of contact, contact email, and shipping address under 'buyer'."
+        "mod": "Generate a detailed JSON output for each purchased item, treating each SKU as a separate item. Include item name, description, quantity, unit price, unit discount, and final total price per item (quantity * (unit price - unit discount)). Ensure all non-quantity and price related details like size, color, and design are included under the item's description. The JSON format should have 'orderDetails' for order date and number, and 'buyer' for company name, point of contact, contact email, contact phone, and shipping address. List each line item under 'lineItems' with fields for item number, description, quantity, unit price, discount, and total price."
     },
     "subquery": {
         "item details": {
@@ -1188,25 +1188,28 @@
         },
         "agent_criteria": {
             "Correctness": {
-                "mod": "Ensure that the output includes all items the buyer agreed to purchase."
+                "mod": "Ensure that the output accurately lists each item the buyer agreed to purchase."
             },
-            "Item Details": {
-                "mod": "Each line item should include the item name, description, quantity purchased, unit price, unit discount, and final total price per item."
+            "Completeness": {
+                "mod": "Include all requested details for each item: item name, item description, quantity purchased, unit price, unit discount, and final total price per item."
             },
-            "SKU Treatment": {
-                "mod": "Treat each SKU of the purchased item as a separate line item."
-            },
-            "Description Details": {
-                "mod": "Include all non-quantity and price related details of each item under its description, such as size, color, and design."
+            "Separation of SKUs": {
+                "mod": "Treat each SKU of the purchased item as a separate item in the output."
             },
             "JSON Format": {
-                "mod": "Output the result in JSON format as specified in the example provided."
+                "mod": "Output the result in valid JSON format as specified in the example."
+            },
+            "Line Item Details": {
+                "mod": "Include all non-quantity and price related details of each item under its description, such as size, color, and design."
+            },
+            "Calculation Accuracy": {
+                "mod": "Ensure the final total price per item is calculated correctly (quantity * (unit price - unit discount))."
             },
             "Order Details": {
-                "mod": "Include relevant order details like order date and order number under 'orderDetails'."
+                "mod": "Include order details like order date and order number under 'orderDetails'."
             },
             "Buyer Information": {
-                "mod": "Include buyer details such as company name, point of contact, contact email, contact phone, and shipping address under 'buyer'."
+                "mod": "Include buyer details like company name, point of contact, contact email, contact phone, and shipping address under 'buyer'."
             }
         }
     }
