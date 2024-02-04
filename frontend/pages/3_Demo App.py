@@ -1,3 +1,6 @@
+import sys  
+sys.path.insert(1, '../')
+
 import streamlit as st
 from midas.email_ingest import EmailIngest
 from midas.agent import Midas
