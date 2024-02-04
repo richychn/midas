@@ -80,3 +80,10 @@ class Ingest:
     
     def upload_nodes(self):
         self.astra_db_store.add(self.nodes)
+
+    def run(self):
+        self.get_documents()
+        self.get_emails_with_metadata()
+        self.get_nodes()
+        self.add_embeddings_to_nodes()
+        self.upload_nodes()
