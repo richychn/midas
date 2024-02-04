@@ -1,7 +1,8 @@
 import streamlit as st
 from midas.email_ingest import EmailIngest
 from midas.agent import Midas
-from tempfile import NamedTemporaryFile
+import tempfile
+import pathlib
 from dotenv import load_dotenv
 from datetime import datetime
 import json
@@ -80,24 +81,33 @@ criteria = st.text_area(
     ]
     """
 )
+example_criteria = [
+    {"format": "the format should be outputted as a single string representing a JSON object containing no newlines"},
+    {"no_markdown": "the output should not be in markdown, it should not contain backticks"}
+]
 
 st.subheader("Optionally, load an existing agent and ignore above:")
 loaded_agent = st.file_uploader("Agent JSON file", type='json')
 
-
-midas_agent = None
-
 agent_button = st.button("Create Agent")
 if agent_button:
     with st.spinner('Creating...'):
-        with NamedTemporaryFile(dir='.', suffix='.pdf') as f:
+        temp_dir = tempfile.TemporaryDirectory()
+        uploaded_file_name = "File_provided.pdf"
+        uploaded_file_path = pathlib.Path(temp_dir.name) / uploaded_file_name
+        with open(uploaded_file_path, 'wb') as output_temporary_file:
             if uploaded_file is not None:
-                f.write(uploaded_file.getbuffer())
-                file_path = f.name
-                EmailIngest(file_path).run()
-        midas_agent = Midas()
-        midas_agent.set_objective(raw_prompt)
-        midas_agent.add_criteria(json.loads(criteria))
+                output_temporary_file.write(uploaded_file.read())
+                EmailIngest(uploaded_file_path).run()
+                st.session_state['midas_agent'] = Midas()
+                if raw_prompt == "":
+                    st.session_state['midas_agent'].set_objective(example_prompt)
+                else:
+                    st.session_state['midas_agent'].set_objective(raw_prompt)
+                if criteria == "":
+                    st.session_state['midas_agent'].add_criteria(example_criteria)
+                else:
+                    st.session_state['midas_agent'].add_criteria([json.loads(i) for i in criteria])
 
 load_button = st.button("Load Agent")
 if load_button:
@@ -106,20 +116,27 @@ if load_button:
             if uploaded_file is not None:
                 f.write(uploaded_file.getbuffer())
                 file_path = f.name
-                midas_agent = Midas()
-                midas_agent.load(file_path)
+                st.session_state['midas_agent'] = Midas()
+                st.session_state['midas_agent'].load(file_path)
 
-if midas_agent is not None:
+if 'midas_agent' in st.session_state:
     train_button = st.button("Train Agent")
     if train_button:
         with st.spinner('Training...'):
-            midas_agent.train(convo_ids=[convo_id], sort_key=parse_date)
+            st.session_state['midas_agent'].train(convo_ids=[convo_id], sort_key=parse_date)
             st.write("Training complete!")
 
     generate_button = st.button("Generate Output")
+    generation = None
     if generate_button:
+        print("button clicked")
         with st.spinner("Generating..."):
-            midas_agent.run(convo_id=convo_id, sort_key=parse_date)
+            generation = st.session_state['midas_agent'].run(convo_id=convo_id, sort_key=parse_date)
+            print(generation)
+    if generation is not None:
+        print("generation met")
+        st.write(generation)
 
-    st.download_button('Download Agent', json.dumps(midas_agent.export_structure()), 'text/json')
+
+    st.download_button('Download Agent', json.dumps(st.session_state['midas_agent'].export_structure()), 'text/json')
 
