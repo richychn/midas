@@ -43,27 +43,27 @@ st.write("""
 team_members = [
     {
         "name": "Kai Hayden",
-        "image_path": "/Users/shahmohnish/Documents/midas/frontend/images/demo.jpg",
+        "image_path": "frontend/images/demo.jpg",
         "introduction": "Hi, I'm Engineer 1. I specialize in...",
     },
     {
         "name": "Richy Chen",
-        "image_path": "/Users/shahmohnish/Documents/midas/frontend/images/demo.jpg",
+        "image_path": "frontend/images/demo.jpg",
         "introduction": "Hello, I'm Engineer 2. My expertise lies in...",
     },
     {
         "name": "Bharathrham Kodungudi",
-        "image_path": "/Users/shahmohnish/Documents/midas/frontend/images/demo.jpg",
+        "image_path": "frontend/images/demo.jpg",
         "introduction": "Greetings! I'm Engineer 3. I'm passionate about...",
     },
     {
         "name": "Mehul Khetrapal",
-        "image_path": "/Users/shahmohnish/Documents/midas/frontend/images/demo.jpg",
+        "image_path": "frontend/images/demo.jpg",
         "introduction": "Hey there, I'm Engineer 4. I specialize in...",
     },
     {
         "name": "Mohnish Shah",
-        "image_path": "/Users/shahmohnish/Documents/midas/frontend/images/demo.jpg",
+        "image_path": "frontend/images/demo.jpg",
         "introduction": "Hi, I'm Engineer 5. My focus is on...",
     },
 ]

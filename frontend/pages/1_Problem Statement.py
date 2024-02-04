@@ -18,7 +18,7 @@ def sales_order_use_case():
         """
     )
 
-    st.image("/Users/shahmohnish/Documents/midas/frontend/images/negotiation.jpg", caption="Sales Negotiation Cycle", use_column_width=True)
+    st.image("frontend/images/negotiation.jpg", caption="Sales Negotiation Cycle", use_column_width=True)
 
     st.markdown(
         """
@@ -41,7 +41,7 @@ def sales_order_use_case():
         """
     )
 
-    st.image("/Users/shahmohnish/Documents/midas/frontend/images/chaos.jpg", caption="Creating Order from Chaos", use_column_width=True)
+    st.image("frontend/images/chaos.jpg", caption="Creating Order from Chaos", use_column_width=True)
 
     st.markdown(
         """
