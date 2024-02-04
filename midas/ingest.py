@@ -79,7 +79,7 @@ class Ingest:
             node.embedding = embedding
     
     def upload_nodes(self):
-        self.astra_db_store.add(self.nodes)
+        self.vector_store.add(self.nodes)
 
     def run(self):
         self.get_documents()
