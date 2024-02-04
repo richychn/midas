@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
 
-sys.path.append('...')
+sys.path.append('../../midas')
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 import streamlit as st
