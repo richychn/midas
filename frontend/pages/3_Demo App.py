@@ -1,3 +1,8 @@
+import sys
+from pathlib import Path
+print(str(Path(__file__).resolve().parent.parent.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+
 import streamlit as st
 from midas.email_ingest import EmailIngest
 from midas.agent import Midas
