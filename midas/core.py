@@ -62,6 +62,12 @@ class SubQueryStruct:
         {',\n\t'.join(subquery_names)}
     )"""
 
+    def parse(self, completion_dict):
+        for name, struct in completion_dict.items():
+            if name not in self.data:
+                self.data[name] = SubQuery()
+            self.data[name].parse(struct['string'], struct['embedding'])
+
     def load(self, f_subquery):
         for name, struct in f_subquery.items():
             subquery = SubQuery()
@@ -83,12 +89,21 @@ class SubQuery:
         self.embedding = ''
 
     def __repr__(self):
-        return f"SubQuery{self.name}"
+        return f"SubQuery({self.name})"
 
     def load(self, name, struct):
-        self.name = name
-        self.string = struct.get('string', '')
-        self.embedding = struct.get('embedding', '')
+        if isinstance(struct, dict):
+            self.name = name
+            self.string = struct.get('string', '')
+            self.embedding = struct.get('embedding', '')
+        else:
+            self.name = name
+            self.string = struct.string
+            self.embedding = struct.embedding
+
+    def parse(self, string, embedding):
+        self.string = string
+        self.embedding = embedding
 
 class CriteriaStruct:
 

@@ -1,11 +1,16 @@
 import json
 import midas.core as c
+import midas.prompts as p
+import midas.embeddings as e
 
 
 class Midas:
 
     def __init__(self):
         self.path = ''
+        self.client = None
+        self.is_trained = False
+
         self.agent = c.Agent()
         self.prompt = c.Prompt()
         self.subquery = c.SubQueryStruct()
@@ -13,6 +18,42 @@ class Midas:
 
     def __repr__(self):
         return f"Midas({self.agent}{self.prompt}{self.subquery}{self.criteria}\n)"
+    
+    def set_client(self, client):
+        self.client = client
+
+    def set_mission(self, mission):
+        self.prompt.raw = mission
+        self.prompt.mod = mission
+
+        completion_dict = self.generate_subqueries()
+        completion_dict = self.generate_subquery_embeddings(completion_dict)
+        self.subquery.parse(completion_dict)
+
+    def generate_subqueries(self):
+
+        completion = self.client.chat.completions.create(
+            model="gpt-4-turbo-preview",
+            messages=[
+                {"role": "system", "content": p.SUBQUERY_CONTEXT},
+                {"role": "user", "content": self.prompt.mod}
+            ],
+            temperature=0
+        )
+
+        completion_dict = json.loads(completion.choices[0].message.content)
+
+        completion_dict = {name: {'string': string, 'embedding': []} for name, string in completion_dict.items()}
+
+        return completion_dict
+    
+    def generate_subquery_embeddings(self, completion_dict):
+
+        for name, struct in completion_dict.items():
+
+            completion_dict[name]['embedding'] = e.embed_string(struct['string'])
+
+        return completion_dict
 
     def load(self, filepath):
 
