@@ -2746,7 +2746,7 @@
                 ]
             ]
         },
-        "non_quantity_and_price_related_details": {
+        "non_quantity_and_price_details": {
             "string": "non quantity and price related details",
             "embedding": [
                 [

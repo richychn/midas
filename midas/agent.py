@@ -27,9 +27,9 @@ class Midas:
     def __repr__(self):
         return f"Midas({self.agent}{self.prompt}{self.subquery}{self.criteria}\n)"
 
-    def set_mission(self, mission):
-        self.prompt.raw = mission
-        self.prompt.mod = mission
+    def set_objective(self, objective):
+        self.prompt.raw = objective
+        self.prompt.mod = objective
 
         completion_dict = self.generate_subqueries()
         completion_dict = self.generate_subquery_embeddings(completion_dict)
