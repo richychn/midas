@@ -3,7 +3,7 @@ from pathlib import Path
 import os
 
 
-# sys.path.append('../../midas')
+sys.path.append('/Users/richy/code/midas')
 # sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 print("************")
