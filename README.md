@@ -1,5 +1,5 @@
 # Midas
-Midas is a low code self-supervised production grade RAG agent creation.
+Low code self-supervised production grade RAG agent that turns everything it touches into gold in 10 seconds or less.
 
 ## Using Midas
 ```python
