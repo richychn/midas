@@ -7,11 +7,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Query:
-    def __init__(self, query_str=None, query_embedding=None, query_mode="default", top_k=4):
+    def __init__(self, query_str=None, query_embedding=None, query_mode="default", top_k=4, namespace="sales"):
         self.query_str = query_str
         self.query_embedding = query_embedding
         self.query_mode = query_mode
         self.top_k = top_k
+        self.namespace = namespace
 
     def embed_query(self):
         headers = {"Authorization": f"Bearer {os.getenv('HUGGINGFACE_API_TOKEN')}"}
@@ -34,6 +35,7 @@ class Query:
             api_endpoint=os.getenv('ASTRA_DB_API_ENDPOINT'),
             collection_name="midas_collection",
             embedding_dimension=384,
+            namespace=self.namespace
         )
         query_result = vector_store.query(vector_store_query)
         return query_result.nodes

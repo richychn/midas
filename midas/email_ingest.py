@@ -1,6 +1,7 @@
 from llama_parse import LlamaParse
 from llama_index.text_splitter import SentenceSplitter
 from llama_index.schema import TextNode
+from llama_index.vector_stores import AstraDBVectorStore
 import re 
 import requests
 import os
@@ -12,23 +13,23 @@ load_dotenv()
 
 
 class EmailIngest:
-    def __init__(self, file_path):
+    def __init__(self, file_path, namespace="sales"):
         self.file_path = file_path
         self.parser = LlamaParse(result_type="markdown")
         self.file_extractor = {".pdf": self.parser}
         self.text_splitter = SentenceSplitter()
+        self.namespace = namespace
 
         self.document = None
         self.emails_with_metadata = []
         self.nodes = []
-
-        from llama_index.vector_stores import AstraDBVectorStore
 
         self.vector_store = AstraDBVectorStore(
             token=os.getenv('ASTRA_DB_APPLICATION_TOKEN'),
             api_endpoint=os.getenv('ASTRA_DB_API_ENDPOINT'),
             collection_name="midas_collection",
             embedding_dimension=384,
+            namespace=self.namespace
         )
 
     def get_documents(self):
