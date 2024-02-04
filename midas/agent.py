@@ -12,7 +12,7 @@ class Midas:
         self.criteria = c.CriteriaStruct()
 
     def __repr__(self):
-        return f"Midas({self.agent}{self.prompt}{self.subquery}{self.criteria}"
+        return f"Midas({self.agent}{self.prompt}{self.subquery}{self.criteria}\n)"
 
     def load(self, filepath):
 

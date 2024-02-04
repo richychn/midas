@@ -16,11 +16,23 @@
                 1,
                 1
             ]
+        },
+        "subquery_name_2": {
+            "string": "placeholder_subquery_string",
+            "embedding": [
+                1,
+                1,
+                1
+            ]
         }
     },
     "criteria": {
         "user_criteria": {
             "criteria_name": {
+                "raw": "raw criteria",
+                "mod": "mod criteria"
+            },
+            "criteria_name_2": {
                 "raw": "raw criteria",
                 "mod": "mod criteria"
             }

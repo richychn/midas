@@ -59,7 +59,7 @@ class SubQueryStruct:
         subquery_names = [name for name in self.data]
         return f"""
     SubQueryStruct(
-        {'\t'.join(subquery_names)}
+        {',\n\t'.join(subquery_names)}
     )"""
 
     def load(self, f_subquery):
@@ -104,10 +104,10 @@ class CriteriaStruct:
         return f"""
     CriteriaStruct(
         UserCriteria(
-            {'\t'.join(user_criteria_names)}
+            {',\n\t'.join(user_criteria_names)}
         )
         AgentCriteria(
-            {'\t'.join(agent_criteria_names)}
+            {',\n\t'.join(agent_criteria_names)}
         )
     )"""
 
