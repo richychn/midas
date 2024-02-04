@@ -39,5 +39,6 @@ class Query:
         return query_result.nodes
     
     def run(self):
-        self.embed_query()
+        if self.query_embedding is None:
+            self.embed_query()
         return self.get_similar_nodes()
