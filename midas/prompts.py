@@ -7,9 +7,7 @@ The substrings are not what format (such as python dict or JSON) should be retur
 
 The substrings are only used to retrieve information from documents, and each substring should not contain multiple topics.
 
-The substrings should not include any information on the output format or output structure, such as any mention of JSON or python data structures.
-
-The output should be returned in JSON format {"name_of_substring": "substring", "name_of_substring": "substring"}.
+The output should be returned in the format {"name_of_substring": "substring", "name_of_substring": "substring"}.
 """
 
 CRITERIA_CONTEXT = """
@@ -19,11 +17,11 @@ Your task is to identify all the criteria that a high quality output generated b
 
 The user will provide a request they have for the LLM, and you should generate a list for evaluating the quality of reponse of the LLM.
 
-This list should be comprehensive and good enough that an evaluator going through the checklist can determine the quality of the output specific to the user request.
+This list should be comprehensive and good enough that an evaluator going through the checklist can determine the quality of the output specific to the user request, but should not be too excessive.
 
-The list should be expressed as a python dictionary of name and criteria strings.
+The list should be expressed as a python dictionary of descriptive name and criteria strings.
 
-The output should be returned in JSON format {"name_1": "criteria_1", "name_2", "criteria_2"}. Output this dictionary as a single string without markdown backticks.
+The output should be returned in JSON format with the keys being names and the values being criteria,  {"name_of_criteria_1": "criteria_1", "name_of_criteria_2", "criteria_2", "name_of_criteria_3", "criteria_3"}. Do not actually number the criteria.
 """
 
 EVAL_CONTEXT = """
@@ -53,5 +51,7 @@ If there is little negative feedback, changes do not have to be made.
 
 If any information is removed you must be sure it was unnecessary to the generation of the output.
 
-The output should be returned as a string.
+Only make changes that you are very confident will improve the quality of the output.
+
+The output should be returned as a JSON like {"Modified Prompt": modified_prompt}.
 """

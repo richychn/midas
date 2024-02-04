@@ -12,7 +12,7 @@ from itertools import repeat
 
 from openai import OpenAI
 from dotenv import load_dotenv
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
 
 load_dotenv()
 
@@ -21,18 +21,19 @@ openai.api_key = os.environ["OPENAI_API_KEY"]
 
 class Midas:
 
-    def __init__(self):
+    def __init__(self, name=''):
         self.path = ''
         self.client = OpenAI()
         self.is_trained = False
 
-        self.agent = c.Agent()
+        self.agent = c.Agent(name)
         self.prompt = c.Prompt()
         self.subquery = c.SubQueryStruct()
         self.criteria = c.CriteriaStruct()
 
     def __repr__(self):
-        return f"Midas({self.agent}{self.prompt}{self.subquery}{self.criteria}\n)"
+
+        return f"{self.agent}\n{self.prompt}\n{self.subquery}\n{self.criteria}"
 
     def set_objective(self, objective):
         self.prompt.raw = objective
@@ -48,15 +49,19 @@ class Midas:
     def generate_subqueries(self):
 
         completion = self.client.chat.completions.create(
-            model="gpt-4-turbo-preview",
+            model="gpt-3.5-turbo-0125",
             messages=[
                 {"role": "system", "content": p.SUBQUERY_CONTEXT},
                 {"role": "user", "content": self.prompt.mod}
             ],
+            response_format={"type": "json_object"},
             temperature=0
         )
 
         completion_dict = json.loads(completion.choices[0].message.content)
+
+        if len(completion_dict) == 1 and len(completion_dict[list(completion_dict.keys())[0]]) > 1:
+            completion_dict = completion_dict[list(completion_dict.keys())[0]]
 
         completion_dict = {name: {'string': string, 'embedding': []} for name, string in completion_dict.items()}
 
@@ -73,15 +78,19 @@ class Midas:
     def generate_criteria(self):
 
         completion = self.client.chat.completions.create(
-            model="gpt-4-turbo-preview",
+            model="gpt-3.5-turbo-0125",
             messages=[
                 {"role": "system", "content": p.CRITERIA_CONTEXT},
                 {"role": "user", "content": self.prompt.mod}
             ],
+            response_format={"type": "json_object"},
             temperature=0
         )
 
         completion_dict = json.loads(completion.choices[0].message.content)
+
+        if len(completion_dict) == 1 and len(completion_dict[list(completion_dict.keys())[0]]) > 1:
+            completion_dict = completion_dict[list(completion_dict.keys())[0]]
 
         return completion_dict
 
@@ -91,26 +100,41 @@ class Midas:
     def generate_criteria_str(self):
         criteria_str = '\nOutput Criteria:\n'
         for name, struct in (self.criteria.data['UserCriteria'] | self.criteria.data['AgentCriteria']).items():
-            criteria_str += f" - {name}: {struct.mod}\n"
+            criteria_str += f" - [{name}]: {struct.mod}\n"
 
         return criteria_str
 
     def run(self, convo_id, sort_key=None):
 
-        chunk_str = self.generate_chunk_str(convo_id, sort_key)
+        print(u.bold(f"Running Midas({self.agent.name})") + f" with convo_id={convo_id}\n")
+
+        print(u.bold('User Request:'))
+        print(self.prompt.mod)
 
         criteria_str = self.generate_criteria_str()
 
+        print(u.bold('Criteria:'))
+        print(criteria_str)
+    
+        chunk_str = self.generate_chunk_str(convo_id, sort_key)
+
+        print(u.bold('Context Provided:'))
+        print(chunk_str)
+
         completion = self.client.chat.completions.create(
-            model="gpt-4-turbo-preview",
+            model="gpt-3.5-turbo-0125",
             messages=[
                 {"role": "system", "content": self.prompt.mod + criteria_str},
                 {"role": "user", "content": chunk_str}
             ],
+            response_format={"type": "json_object"},
             temperature=0
         )
 
         output = completion.choices[0].message.content
+
+        print(u.bold('Agent Output:\n'))
+        print(output)
 
         return output
     
@@ -121,7 +145,7 @@ class Midas:
         output = self.run(convo_id, sort_key)
 
         eval_completion = self.client.chat.completions.create(
-            model="gpt-4-turbo-preview",
+            model="gpt-3.5-turbo-0125",
             messages=[
                 {"role": "system", "content": p.EVAL_CONTEXT},
                 {"role": "user", "content": 'Original User Prompt:\n' + self.prompt.mod + "="*30 + criteria_str + "="*30 + 'Model Output:\n' + output}
@@ -132,15 +156,17 @@ class Midas:
         eval = eval_completion.choices[0].message.content
 
         mod_completion = self.client.chat.completions.create(
-            model="gpt-4-turbo-preview",
+            model="gpt-3.5-turbo-0125", # "gpt-4-turbo-preview",
             messages=[
                 {"role": "system", "content": p.MOD_CONTEXT},
                 {"role": "user", "content": "Feedback:\n" + eval + "="*30 + 'Original User Prompt:\n' + self.prompt.mod}
             ],
+            response_format={"type": "json_object"},
             temperature=0
         )
 
-        mod = mod_completion.choices[0].message.content
+        mod = json.loads(mod_completion.choices[0].message.content)
+        mod = mod[list(mod.keys())[0]]
 
         return output, eval, mod
 
@@ -174,12 +200,13 @@ class Midas:
             json.dump(agent_struct, outfile, indent=4)
 
     def generate_chunk_str(self, convo_id, sort_key=None):
+
         
         def retrieve_subquery_chunks():
-            with ProcessPoolExecutor() as executor:
+            with ThreadPoolExecutor() as executor:
                 results = list(executor.map(
                     q.agent_subquery_retrieval,
-                    self.subquery.data.items(),
+                        self.subquery.data.items(),
                     repeat(convo_id)
                 ))
             
@@ -232,3 +259,12 @@ class Midas:
         chunk_str = process_chunks_lst(processed_chunks_lst)
 
         return chunk_str
+
+    def train(self, convo_ids, sort_key=None):
+
+        if not isinstance(convo_ids, list):
+            convo_ids = [convo_ids]
+
+        for convo_id in convo_ids:
+            output, eval, mod = self.evaluate(convo_id, sort_key)
+            self.prompt.mod = mod

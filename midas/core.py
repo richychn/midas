@@ -1,18 +1,17 @@
+import midas.utils as u
+
+
 class Agent:
 
-    def __init__(self):
+    def __init__(self, name):
 
-        self.name = ''
-        self.language_model = ''
-        self.embedding_model = ''
+        self.name = name
 
     def __repr__(self):
-        return f"""
-    Agent(
-        name={self.name},
-        language_model={self.language_model},
-        embedding_model={self.embedding_model}
-    )"""
+
+        repr_string = u.bold(f'Midas({self.name})\n')
+
+        return repr_string
 
     def load(self, f_agent):
 
@@ -27,6 +26,7 @@ class Agent:
             "embedding_model": self.embedding_model
         }
 
+
 class Prompt:
 
     def __init__(self):
@@ -34,11 +34,15 @@ class Prompt:
         self.mod = ''
 
     def __repr__(self):
-        return f"""
-    Prompt(
-        raw={self.raw},
-        mod={self.mod},
-    )"""
+
+        repr_string = u.bold('Original User Prompt:\n')
+        repr_string += self.raw + '\n'
+
+        if self.raw != self.mod:
+            repr_string += u.bold('Modified User Prompt:\n')
+            repr_string += self.mod + '\n'
+
+        return repr_string
 
     def load(self, f_prompt):
         self.raw = f_prompt.get('raw', '')
@@ -56,31 +60,34 @@ class SubQueryStruct:
         self.data = {}
 
     def __repr__(self):
-        subquery_names = [name for name in self.data]
-        return f"""
-    SubQueryStruct(
-        {',\n\t'.join(subquery_names)}
-    )"""
+
+        repr_string = u.bold('Subqueries:\n')
+
+        for name, subquery in self.data.items():
+            repr_string += f"{subquery}"
+
+        return repr_string
 
     def parse(self, completion_dict):
         for name, struct in completion_dict.items():
             if name not in self.data:
                 self.data[name] = SubQuery()
-            self.data[name].parse(struct['string'], struct['embedding'])
+            self.data[name].parse(name, struct['string'], struct['embedding'])
 
     def load(self, f_subquery):
         for name, struct in f_subquery.items():
             subquery = SubQuery()
             subquery.load(name, struct)
             self.data[name] = subquery
-            
+
     def export_structure(self):
         export_structure = {name: {
             'string': struct.string,
             'embedding': struct.embedding
         } for name, struct in self.data.items()}
         return export_structure
-        
+
+
 class SubQuery:
 
     def __init__(self):
@@ -89,21 +96,22 @@ class SubQuery:
         self.embedding = ''
 
     def __repr__(self):
-        return f"SubQuery({self.name})"
+        return f" - [{self.name}] {self.string}\n"
 
     def load(self, name, struct):
+        self.name = name
         if isinstance(struct, dict):
-            self.name = name
             self.string = struct.get('string', '')
             self.embedding = struct.get('embedding', '')
         else:
-            self.name = name
             self.string = struct.string
             self.embedding = struct.embedding
 
-    def parse(self, string, embedding):
+    def parse(self, name, string, embedding):
+        self.name = name
         self.string = string
         self.embedding = embedding
+
 
 class CriteriaStruct:
 
@@ -114,18 +122,28 @@ class CriteriaStruct:
         }
 
     def __repr__(self):
-        user_criteria_names = [name for name in self.data['UserCriteria']]
-        agent_criteria_names = [name for name in self.data['AgentCriteria']]
-        return f"""
-    CriteriaStruct(
-        UserCriteria(
-            {',\n\t    '.join(user_criteria_names)}
-        )
-        AgentCriteria(
-            {',\n\t    '.join(agent_criteria_names)}
-        )
-    )"""
 
+        repr_string = ''
+
+        if self.data['AgentCriteria'].items():
+
+            repr_string += u.bold('Agent Criteria:\n')
+
+            for name, criteria in self.data['AgentCriteria'].items():
+                repr_string += f"{criteria}\n"
+
+        if self.data['UserCriteria'].items():
+
+            if self.data['AgentCriteria'].items():
+                repr_string += '\n'
+
+            repr_string += u.bold('User Criteria:\n')
+
+            for name, criteria in self.data['UserCriteria'].items():
+                repr_string += f"{criteria}\n"
+
+        return repr_string
+ 
     def add_user_criteria(self, dict_lst):
 
         for struct in dict_lst:
@@ -181,7 +199,7 @@ class Criteria:
         self.mod = ""
 
     def __repr__(self):
-        return f"Criteria({self.name})"
+        return f" - [{self.name}] {self.mod}"
     
     def set(self, name, criteria_str):
         self.name = name
