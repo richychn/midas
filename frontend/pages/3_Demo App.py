@@ -1,8 +1,11 @@
 import sys
 from pathlib import Path
+import os
+print("************")
+print(os.getcwd())
 
 sys.path.append('../../midas')
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+# sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 import streamlit as st
 from midas.email_ingest import EmailIngest
