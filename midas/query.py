@@ -43,12 +43,13 @@ class Query:
         )
         query_result = vector_store.query(vector_store_query)
         return query_result.nodes
-    
+
     def run(self):
         if self.query_embedding is None:
             self.embed_query()
         return self.get_similar_nodes()
-    
+
+
 def agent_subquery_retrieval(item, convo_id):
     key, struct = item
     result = Query(query_embedding=struct.embedding, convo_id=convo_id).run()
