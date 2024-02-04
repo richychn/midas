@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-class Ingest:
+class EmailIngest:
     def __init__(self, file_path):
         self.file_path = file_path
         self.parser = LlamaParse(result_type="markdown")
@@ -35,15 +35,14 @@ class Ingest:
         self.document = LlamaParse(result_type="markdown").load_data(self.file_path)[0]
 
     def get_emails_with_metadata(self):
-        emails = re.split(".*<.*>.*\n*To:.*<.*>", self.document.text)[1:]
-        headers = re.findall(".*<.*>.*\n*To:.*<.*>", self.document.text)
+        emails = re.split("<.*@.*>\n*.*(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)+ (?:0?[1-9]|[1-3][0-9]), [12][0-9]{3} at (?:[0-1]?[0-9]|2[0-3]):(?:[0-5][0-9]+) (?:AM|PM)\n*.*<.*@.*>", self.document.text)[1:]
+        headers = re.findall("(<.*@.*>)\n*.*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)+ (0?[1-9]|[1-3][0-9]), ([12][0-9]{3}) at ([0-1]?[0-9]|2[0-3]):([0-5][0-9]+) (AM|PM)\n*.*(<.*@.*>)", self.document.text)
 
         for email, header in zip(emails, headers):
-            sender = re.findall(".*<.*>", header)[0]
-            receiver = re.findall("To:.*<.*>", header)[0][4:]
-            date = re.findall("(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (0?[1-9]|[1-3][0-9]), ([2][0-9]+) at ([0-1]?[0-9]|2[0-3]):([0-5][0-9]+) (AM|PM)", header)[0]
-            date = datetime.strptime(f'{date[0]} {date[1]}, {date[2]} {date[3]}:{date[4]} {date[5]}', '%b %d, %Y %I:%M %p')
-            self.emails_with_metadata.append((email, {"sender": sender, "receiver": receiver, "date": date.strftime("%m/%d/%Y, %H:%M"), "email_id": 1}))
+            sender = header[0]
+            receiver = header[7]
+            date = datetime.strptime(f'{header[1]} {header[2]}, {header[3]} {header[4]}:{header[5]} {header[6]}', '%b %d, %Y %I:%M %p')
+            self.emails_with_metadata.append((email, {"sender": sender, "receiver": receiver, "date": date.strftime("%m/%d/%Y, %H:%M")}))
 
     def get_nodes(self):
         text_chunks = []
