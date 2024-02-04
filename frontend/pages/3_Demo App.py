@@ -3,6 +3,7 @@ from pathlib import Path
 import os
 print("************")
 print(os.getcwd(), file=sys.stderr)
+print(os.listdir(), file=sys.stderr)
 
 sys.path.append('../../midas')
 # sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
