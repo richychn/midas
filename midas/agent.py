@@ -78,6 +78,8 @@ class Midas:
         for name, struct in completion_dict.items():
 
             completion_dict[name]['embedding'] = e.embed_string(struct['string'])
+            print(struct)
+            print(completion_dict[name]['embedding'])
 
         return completion_dict
 

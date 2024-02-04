@@ -34,6 +34,7 @@ class Query:
             mode=self.query_mode,
             filters=MetadataFilters.from_dict({"convo_id": self.convo_id})
         )
+        print(self.query_embedding)
         vector_store = AstraDBVectorStore(
             token=os.getenv('ASTRA_DB_APPLICATION_TOKEN'),
             api_endpoint=os.getenv('ASTRA_DB_API_ENDPOINT'),
