@@ -119,23 +119,39 @@ class CriteriaStruct:
         return f"""
     CriteriaStruct(
         UserCriteria(
-            {',\n\t'.join(user_criteria_names)}
+            {',\n\t    '.join(user_criteria_names)}
         )
         AgentCriteria(
-            {',\n\t'.join(agent_criteria_names)}
+            {',\n\t    '.join(agent_criteria_names)}
         )
     )"""
+
+    def add_user_criteria(self, dict_lst):
+
+        for struct in dict_lst:
+            for name, criteria in struct.items():
+                c = Criteria()
+                c.set(name, criteria)
+                self.data['UserCriteria'][name] = c
+
+    def parse(self, criteria_dict):
+
+        for name, criteria in criteria_dict.items():
+            c = Criteria()
+            c.set(name, criteria)
+            self.data['AgentCriteria'][name] = c
 
     def load(self, f_criteria):
 
         for name, struct in f_criteria['user_criteria'].items():
-            criteria = Criteria()
-            criteria.load(name, struct)
-            self.data['UserCriteria'][name] = criteria
+            c = Criteria()
+            c.load(name, struct)
+            self.data['UserCriteria'][name] = c
+
         for name, struct in f_criteria['agent_criteria'].items():
-            criteria = Criteria()
-            criteria.load(name, struct)
-            self.data['AgentCriteria'][name] = criteria
+            c = Criteria()
+            c.load(name, struct)
+            self.data['AgentCriteria'][name] = c
 
     def export_structure(self):
         export_structure = {
@@ -155,6 +171,7 @@ class CriteriaStruct:
         }
         return export_structure
 
+
 class Criteria:
 
     def __init__(self):
@@ -165,6 +182,11 @@ class Criteria:
 
     def __repr__(self):
         return f"Criteria({self.name})"
+    
+    def set(self, name, criteria_str):
+        self.name = name
+        self.raw = criteria_str
+        self.mod = criteria_str
 
     def load(self, name, f_criteria):
         self.name = name

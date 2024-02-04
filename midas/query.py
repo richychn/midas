@@ -49,7 +49,7 @@ class Query:
             self.embed_query()
         return self.get_similar_nodes()
     
-def agent_subquery_retrieval(item):
+def agent_subquery_retrieval(item, convo_id):
     key, struct = item
-    result = Query(query_embedding=struct.embedding).run()
+    result = Query(query_embedding=struct.embedding, convo_id=convo_id).run()
     return key, result

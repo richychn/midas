@@ -5,8 +5,8 @@
         "embedding_model": ""
     },
     "prompt": {
-        "raw": "\nFor each item that the buyer agreed to purchase, return the item name, item description, quantity purchased, unit price in dollars, unit discount in dollars, and final total price per item (quantity * (unit price - unit discount)) . Each sku of the purchased item should be treated as a separate item.\n\nOutput the result in json format following the example below. Each line item should have its own list under lineItems. Include all non quantity and price related details of each item under its description.\n\n{ \"orderDetails\":{ \"orderDate\": \"\", \"orderNum\": null, }, \"buyer\":{ \"companyName\": \"\", \"pointOfContact\": \"\", \"contactEmail\": \"\", \"contactPhone\": \"\", \"shippingAddress\": \"\", }, \"lineItems\":[{ \"itemNumber\": null, \"description\": \"\", \"quantity\": null, \"unitPrice\": null, \"discount\": null, \u201ctotalPrice\u201d: null}]}\n",
-        "mod": "\nFor each item that the buyer agreed to purchase, return the item name, item description, quantity purchased, unit price in dollars, unit discount in dollars, and final total price per item (quantity * (unit price - unit discount)) . Each sku of the purchased item should be treated as a separate item.\n\nOutput the result in json format following the example below. Each line item should have its own list under lineItems. Include all non quantity and price related details of each item under its description.\n\n{ \"orderDetails\":{ \"orderDate\": \"\", \"orderNum\": null, }, \"buyer\":{ \"companyName\": \"\", \"pointOfContact\": \"\", \"contactEmail\": \"\", \"contactPhone\": \"\", \"shippingAddress\": \"\", }, \"lineItems\":[{ \"itemNumber\": null, \"description\": \"\", \"quantity\": null, \"unitPrice\": null, \"discount\": null, \u201ctotalPrice\u201d: null}]}\n"
+        "raw": "\nFor each item that the buyer agreed to purchase, return the item name, item description, quantity purchased, unit price in dollars, unit discount in dollars, and final total price per item (quantity * (unit price - unit discount)) . Each sku of the purchased item should be treated as a separate item.\n\nOutput the result in dictionary format following the example below. Each line item should have its own list under lineItems. Include all non quantity and price related details of each item under its description.\n\n{ \"orderDetails\":{ \"orderDate\": \"\", \"orderNum\": null, }, \"buyer\":{ \"companyName\": \"\", \"pointOfContact\": \"\", \"contactEmail\": \"\", \"contactPhone\": \"\", \"shippingAddress\": \"\", }, \"lineItems\":[{ \"itemNumber\": null, \"description\": \"\", \"quantity\": null, \"unitPrice\": null, \"discount\": null, \u201ctotalPrice\u201d: null}]}\n",
+        "mod": "\nFor each item that the buyer agreed to purchase, return the item name, item description, quantity purchased, unit price in dollars, unit discount in dollars, and final total price per item (quantity * (unit price - unit discount)) . Each sku of the purchased item should be treated as a separate item.\n\nOutput the result in dictionary format following the example below. Each line item should have its own list under lineItems. Include all non quantity and price related details of each item under its description.\n\n{ \"orderDetails\":{ \"orderDate\": \"\", \"orderNum\": null, }, \"buyer\":{ \"companyName\": \"\", \"pointOfContact\": \"\", \"contactEmail\": \"\", \"contactPhone\": \"\", \"shippingAddress\": \"\", }, \"lineItems\":[{ \"itemNumber\": null, \"description\": \"\", \"quantity\": null, \"unitPrice\": null, \"discount\": null, \u201ctotalPrice\u201d: null}]}\n"
     },
     "subquery": {
         "item_name": {
@@ -3123,7 +3123,41 @@
         }
     },
     "criteria": {
-        "user_criteria": {},
-        "agent_criteria": {}
+        "user_criteria": {
+            "format": {
+                "raw": "the format should be outputted as a single string representing a python dictionary",
+                "mod": "the format should be outputted as a single string representing a python dictionary"
+            },
+            "no_markdown": {
+                "raw": "the output should not be in markdown, it should not contain backticks",
+                "mod": "the output should not be in markdown, it should not contain backticks"
+            }
+        },
+        "agent_criteria": {
+            "accuracy_of_item_details": {
+                "mod": "The output accurately reflects each item's name, description, quantity purchased, unit price, and unit discount as specified in the user request."
+            },
+            "completeness_of_order_details": {
+                "mod": "The order details section is fully populated with the order date and order number."
+            },
+            "completeness_of_buyer_information": {
+                "mod": "The buyer section includes the company name, point of contact, contact email, contact phone, and shipping address."
+            },
+            "correct_calculation_of_total_price_per_item": {
+                "mod": "The final total price per item is correctly calculated as quantity * (unit price - unit discount)."
+            },
+            "correct_format_of_output": {
+                "mod": "The output is in the correct dictionary format as specified, with each line item having its own list under lineItems."
+            },
+            "inclusion_of_all_requested_fields": {
+                "mod": "All requested fields (item name, item description, quantity, unit price, unit discount, and final total price per item) are included for each line item."
+            },
+            "correct_data_types": {
+                "mod": "All numerical values (quantity, unit price, discount, total price) are represented as numbers, and all other information is correctly represented as strings."
+            },
+            "no_redundant_or_unnecessary_information": {
+                "mod": "The output contains no redundant or unnecessary information, focusing solely on the details requested by the user."
+            }
+        }
     }
 }

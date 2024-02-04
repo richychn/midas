@@ -1,17 +1,23 @@
 import os
 import json
 import midas.core as c
+import midas.utils as u
 import midas.query as q
 import midas.prompts as p
 import midas.embeddings as e
 
 import openai
+
+from itertools import repeat
+
 from openai import OpenAI
 from dotenv import load_dotenv
+from concurrent.futures import ProcessPoolExecutor
 
 load_dotenv()
 
 openai.api_key = os.environ["OPENAI_API_KEY"]
+
 
 class Midas:
 
@@ -32,9 +38,12 @@ class Midas:
         self.prompt.raw = objective
         self.prompt.mod = objective
 
-        completion_dict = self.generate_subqueries()
-        completion_dict = self.generate_subquery_embeddings(completion_dict)
-        self.subquery.parse(completion_dict)
+        subquery_dict = self.generate_subqueries()
+        subquery_dict = self.generate_subquery_embeddings(subquery_dict)
+        criteria_dict = self.generate_criteria()
+        
+        self.subquery.parse(subquery_dict)
+        self.criteria.parse(criteria_dict)
 
     def generate_subqueries(self):
 
@@ -52,7 +61,7 @@ class Midas:
         completion_dict = {name: {'string': string, 'embedding': []} for name, string in completion_dict.items()}
 
         return completion_dict
-    
+
     def generate_subquery_embeddings(self, completion_dict):
 
         for name, struct in completion_dict.items():
@@ -61,15 +70,49 @@ class Midas:
 
         return completion_dict
 
-    def run(self):
-        pass
-        # prompt = self.prompt.mod
-        # subquery_names = list(self.subquery.keys())
-        # subquery_embeddings = 
-        # subquery_tups = []
+    def generate_criteria(self):
 
-        # for name, struct in subquery_dicts:
-        #     q.Query(query_embedding=struct.embedding).run()
+        completion = self.client.chat.completions.create(
+            model="gpt-4-turbo-preview",
+            messages=[
+                {"role": "system", "content": p.CRITERIA_CONTEXT},
+                {"role": "user", "content": self.prompt.mod}
+            ],
+            temperature=0
+        )
+
+        completion_dict = json.loads(completion.choices[0].message.content)
+
+        return completion_dict
+
+    def add_criteria(self, dict_lst):
+        self.criteria.add_user_criteria(dict_lst)
+
+    def generate_criteria_str(self):
+        criteria_str = '\nOutput Criteria:\n'
+        for name, struct in (self.criteria.data['UserCriteria'] | self.criteria.data['AgentCriteria']).items():
+            criteria_str += f" - {name}: {struct.mod}\n"
+
+        return criteria_str
+
+    def run(self, convo_id, sort_key=None):
+
+        chunk_str = self.generate_chunk_str(convo_id, sort_key)
+
+        criteria_str = self.generate_criteria_str()
+
+        completion = self.client.chat.completions.create(
+            model="gpt-4-turbo-preview",
+            messages=[
+                {"role": "system", "content": self.prompt.mod + criteria_str},
+                {"role": "user", "content": chunk_str}
+            ],
+            temperature=0
+        )
+
+        output = completion.choices[0].message.content
+
+        return output
 
     def load(self, filepath):
 
@@ -99,3 +142,63 @@ class Midas:
 
         with open(filepath, "w") as outfile:
             json.dump(agent_struct, outfile, indent=4)
+
+    def generate_chunk_str(self, convo_id, sort_key=None):
+        
+        def retrieve_subquery_chunks():
+            with ProcessPoolExecutor() as executor:
+                results = list(executor.map(
+                    q.agent_subquery_retrieval,
+                    self.subquery.data.items(),
+                    repeat(convo_id)
+                ))
+            
+            retrieved_chunks = dict(results)
+        
+            return retrieved_chunks
+        
+        def process_chunks(retrieved_chunks):
+            processed_chunks = {}
+            
+            for subquery, textnode_list in retrieved_chunks.items():
+                for textnode in textnode_list:
+            
+                    text = textnode.text
+                    metadata_str = textnode.get_metadata_str()
+                    metadata_lst = metadata_str.split(textnode.metadata_seperator)
+                    metadata_dct = u.list_to_dict(metadata_lst)
+            
+                    if text not in processed_chunks:
+                        processed_chunks[text] = {
+                            'metadata': metadata_dct,
+                            'topics': [subquery]
+                        }
+                    else:
+                        processed_chunks[text]['topics'].append(subquery)
+            
+            processed_chunks_lst = u.dict_to_list(processed_chunks)
+        
+            return processed_chunks_lst
+        
+        def process_chunks_lst(processed_chunks_lst):
+            retrieved_str = ''
+            
+            for chunk in processed_chunks_lst:
+                chunk_str = '\n' + '=' * 50 + '\n'
+                chunk_str += u.translate_to_string(chunk['metadata']) + '\n'
+                chunk_str += f'topics: {chunk['topics']}' + '\n\n'
+                chunk_str += chunk['text'] + '\n'
+            
+                retrieved_str += chunk_str
+        
+            return retrieved_str
+
+        retrieved_chunks = retrieve_subquery_chunks()
+        processed_chunks_lst = process_chunks(retrieved_chunks)
+
+        if sort_key:
+            processed_chunks_lst = sorted(processed_chunks_lst, key=sort_key)
+
+        chunk_str = process_chunks_lst(processed_chunks_lst)
+
+        return chunk_str
